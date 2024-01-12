@@ -1,0 +1,26 @@
+const express = require('express')
+const app = express()
+const cors = require('cors')
+
+const UserController = require('./controllers/userController')
+const CompanyController = require('./controllers/companyController')
+const CategoryController = require('./controllers/categoryController')
+const ReviewController = require('./controllers/reviewController')
+
+const { register, login } = require('./controllers/authController')
+
+app.use(express.json())
+// const deployedUrl = 'https://mern-e-commerce-project.vercel.app'
+// const corsOptions = {
+//   origin: deployedUrl,
+// };
+app.use(cors())
+
+app.use('/signup', register)
+app.use('/login', login)
+app.use('/user', UserController)
+app.use('/company', CompanyController)
+app.use('/reviews', ReviewController)
+app.use('/category', CategoryController)
+
+module.exports = app
