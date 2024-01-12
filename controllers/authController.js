@@ -6,7 +6,7 @@ require('dotenv').config()
 const { body, validationResult } = require('express-validator')
 
 const generateToken = (user) => {
-	return jwt.sign({ user }, process.env.JWT_SECRET_KEY)
+	return jwt.sign({ user }, process.env.JWT_SECRET__KEY)
 }
 const register = router.post(
 	'/',
