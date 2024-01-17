@@ -10,7 +10,7 @@ const CompanySchema = new mongoose.Schema(
 			state: { type: String, required: true },
 			city: { type: String, required: true },
 			streetAddress: { type: String, required: true },
-			postalCode: { type: Number, required: true },
+			postalCode: { type: String, required: true },
 		},
 		website: { type: String, required: true },
 		email: { type: String, required: true, unique: true },
@@ -20,7 +20,7 @@ const CompanySchema = new mongoose.Schema(
 			ref: 'catogery',
 			required: true,
 		},
-		sociallinks: [{ url: String }],
+		sociallinks: [{ url: String, platform: String }],
 		reviews: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

@@ -48,18 +48,18 @@ const login = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email })
 		if (!user) {
-			return res.send('Wrong email or password')
+			throw new Error('Wrong email or password')
 		}
 		const match = user.checkPassword(req.body.password)
 		if (!match) {
-			return res.send('Wrong Email or Password')
+			throw new Error('Wrong email or password')
 		}
 		const token = generateToken(user)
 		const userWithoutPassword = { ...user._doc }
 		delete userWithoutPassword.password
 		return res.send({ user: userWithoutPassword, token })
 	} catch (error) {
-		return res.send(error.message)
+		return res.status(500).send(error.message)
 	}
 }
 
