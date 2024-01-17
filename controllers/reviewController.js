@@ -64,7 +64,7 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
 	try {
 		const review = await Review.findByIdAndDelete(req.params.id)
-		return res.status(204).send({ review })
+		return res.status(204).send(review)
 	} catch (error) {
 		return res.status(500).send({ error: error.message })
 	}
