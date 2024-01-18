@@ -11,11 +11,7 @@ const ReviewController = require('./controllers/reviewController')
 const { register, login } = require('./controllers/authController')
 
 app.use(express.json())
-const deployedUrl = process.env.WEB_URL
-const corsOptions = {
-	origin: deployedUrl,
-}
-app.use(cors(corsOptions))
+app.use(cors())
 
 app.use('/api', (req, res) => {
 	return res.status(200).send('Welcome to review app')
