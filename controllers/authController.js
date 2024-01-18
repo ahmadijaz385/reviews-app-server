@@ -59,7 +59,7 @@ const login = async (req, res) => {
 		delete userWithoutPassword.password
 		return res.send({ user: userWithoutPassword, token })
 	} catch (error) {
-		return res.status(500).send(error.message)
+		return res.status(500).send({ error: error.message })
 	}
 }
 
