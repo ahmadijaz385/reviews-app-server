@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Review = require('../models/reviewModel')
+
 router.get('/', async (req, res) => {
 	try {
 		const review = await Review.find()
@@ -51,7 +52,6 @@ router.post('/', async (req, res) => {
 		return res.status(500).send({ error: error.message })
 	}
 })
-
 router.patch('/:id', async (req, res) => {
 	try {
 		const review = await Review.findByIdAndUpdate(req.params.id, req.body)
@@ -60,7 +60,6 @@ router.patch('/:id', async (req, res) => {
 		return res.status(500).send({ error: error.message })
 	}
 })
-
 router.delete('/:id', async (req, res) => {
 	try {
 		const review = await Review.findByIdAndDelete(req.params.id)

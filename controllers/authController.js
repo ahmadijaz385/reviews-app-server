@@ -34,7 +34,7 @@ const register = router.post(
 			}
 			let user = await User.findOne({ email: req.body.email }).lean().exec()
 			if (user) {
-				return res.send('Email already exists')
+				throw new Error('Email already exists')
 			}
 			user = await User.create(req.body)
 			const token = generateToken(user)
@@ -48,7 +48,7 @@ const login = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email })
 		if (!user) {
-			throw new Error('Wrong email or password')
+			throw new Error('User with that email does not exits')
 		}
 		const match = user.checkPassword(req.body.password)
 		if (!match) {

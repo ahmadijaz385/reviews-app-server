@@ -12,7 +12,6 @@ router.post('/create', async (req, res) => {
 		return res.status(500).send({ error: error.message })
 	}
 })
-
 router.get('/', async (req, res) => {
 	try {
 		const category = await Category.find().lean().exec()
@@ -23,7 +22,6 @@ router.get('/', async (req, res) => {
 })
 router.get('/top', async (req, res) => {
 	try {
-		// const category = await Category.find().lean().exec();
 		const result = await Company.aggregate([
 			{
 				$lookup: {
