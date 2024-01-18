@@ -118,7 +118,7 @@ router.post('/:id/reviews', upload.single('userPhoto'), async (req, res) => {
 router.delete('/:id/reviews/:idx', async (req, res) => {
 	try {
 		const review = await Reviews.findByIdAndDelete(req.params.idx)
-		const company = await Company.findByIdAndDelete(req.params.id, {
+		const company = await Company.findByIdAndUpdate(req.params.id, {
 			$pull: { reviews: req.params.idx },
 		})
 		return res.status(200).send({ review: review })
