@@ -7,6 +7,7 @@ const UserController = require('./controllers/userController')
 const CompanyController = require('./controllers/companyController')
 const CategoryController = require('./controllers/categoryController')
 const ReviewController = require('./controllers/reviewController')
+const InboxController = require('./controllers/inboxController')
 
 const { register, login } = require('./controllers/authController')
 
@@ -23,5 +24,6 @@ app.use('/user', UserController)
 app.use('/company', CompanyController)
 app.use('/reviews', ReviewController)
 app.use('/category', CategoryController)
+app.use('/inbox', InboxController)
 
 module.exports = app
