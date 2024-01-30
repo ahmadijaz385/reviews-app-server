@@ -6,7 +6,7 @@ router.get('/', async (req, res) => {
 	try {
 		const review = await Review.find()
 			.sort({ createdAt: -1 })
-			.limit(5)
+			.limit(req.query.limit)
 			.populate({
 				path: 'companyID',
 				select: 'name',

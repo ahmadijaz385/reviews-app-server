@@ -10,6 +10,16 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			default: 'user',
 		},
+		status: {
+			type: String,
+			default: 'inactive',
+		},
+		company: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'company',
+			required: false,
+			default: null
+		},
 	},
 	{
 		timestamps: true,

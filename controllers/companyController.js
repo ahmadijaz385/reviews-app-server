@@ -1,18 +1,26 @@
 const express = require('express')
 const Company = require('../models/companyModel')
+const User = require('../models/userModel')
 const Reviews = require('../models/reviewModel')
 const ReviewReply = require('../models/reviewReplyModel')
 const upload = require('../middleware/upload-photo')
+const SendMail = require('../middleware/sendEmail')
+
 const router = express.Router()
 
 const { body, validationResult } = require('express-validator')
 
 router.post('/create', upload.single('logo'), async (req, res) => {
 	try {
+		let userID = req.body.userID
+		delete req.body.userID
 		if (req.file) {
 			req.body.logo = req.file.location
 		}
 		const company = await Company.create(req.body)
+		if (company) {
+			await User.findByIdAndUpdate(userID, { $set: { company: company._id } })
+		}
 		return res.status(201).json(company)
 	} catch (error) {
 		console.log(error.message)
@@ -37,6 +45,15 @@ router.get('/', async (req, res) => {
 			.sort({ createdAt: req.query._sort })
 			.lean()
 			.exec()
+		return res.status(200).send(companies)
+	} catch (error) {
+		console.log(error.message)
+		return res.status(500).send('Error :', error.message)
+	}
+})
+router.get('/lists', async (req, res) => {
+	try {
+		const companies = await Company.find({}, 'name')
 		return res.status(200).send(companies)
 	} catch (error) {
 		console.log(error.message)
@@ -106,7 +123,22 @@ router.post('/:id/reviews', upload.single('userPhoto'), async (req, res) => {
 		const company = await Company.findByIdAndUpdate(req.params.id, {
 			$push: { reviews: review._id },
 		})
-		return res.status(201).send({ success: 'Review Posted' })
+		const emailData = {
+			from: process.env.EMAIL_FROM,
+			to: company.email,
+			subject: `New Review Received`,
+			html: `
+                <h1>Dear ${company.name}</h1>
+
+								<p>We hope this message finds you well.</p>
+								<p>We wanted to inform you that a new review has been submitted regarding our company. Your attention to this matter would be greatly appreciated.</p>
+								<p>Thank you for your continued dedication to maintaining the quality of our services.</p>
+                <p>${process.env.CLIENT_URL}/reviews/${req.params.id}</p>
+            `,
+		}
+
+		SendMail(emailData, res)
+		// return res.status(201).send({ success: 'Review Posted' })
 	} catch (err) {
 		return res.status(500).send({
 			statue: 'failure',
@@ -129,7 +161,6 @@ router.delete('/:id/reviews/:idx', async (req, res) => {
 
 router.post('/:id/reviews/:reviewID/reply', async (req, res) => {
 	try {
-		console.log(req.body, 'req.body')
 		const reviewReply = await ReviewReply.create(req.body)
 		const company = await Reviews.findByIdAndUpdate(req.params.reviewID, {
 			reply: reviewReply._id,

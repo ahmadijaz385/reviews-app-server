@@ -46,9 +46,12 @@ const register = router.post(
 )
 const login = async (req, res) => {
 	try {
-		const user = await User.findOne({ email: req.body.email })
+		const user = await User.findOne({ email: req.body.email }).populate('company')
 		if (!user) {
 			throw new Error('User with that email does not exits')
+		}
+		if (user.status === 'inactive') {
+			throw new Error('User is inactive. Please wait for admin approval')
 		}
 		const match = user.checkPassword(req.body.password)
 		if (!match) {

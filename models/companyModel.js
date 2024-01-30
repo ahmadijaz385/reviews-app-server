@@ -20,6 +20,10 @@ const CompanySchema = new mongoose.Schema(
 			ref: 'catogery',
 			required: true,
 		},
+		status: {
+			type: String,
+			default: 'inactive',
+		},
 		sociallinks: [{ url: String, platform: String }],
 		reviews: [
 			{

@@ -76,7 +76,10 @@ router.get('/', async (req, res) => {
 })
 router.get('/:id', async (req, res) => {
 	try {
-		const user = await User.findById(req.params.id).lean().exec()
+		const user = await User.findById(req.params.id).populate({
+			path: 'company',
+			populate: { path: 'reviews', populate: { path: 'reply' } }
+	}).lean().exec()
 		return res.status(200).send({ User: user })
 	} catch (error) {
 		return res.status(500).send({ error: error.message })
@@ -112,6 +115,28 @@ router.patch(
 		}
 	}
 )
+
+router.post('/update/password', async (req, res) => {
+	try {
+		const { userID, oldPassword, newPassword } = req.body
+
+		const user = await User.findById(userID)
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' })
+		}
+
+		const match = user.checkPassword(oldPassword)
+		if (!match) {
+			throw new Error('Old password is incorrect')
+		}
+		user.password = newPassword
+		await user.save()
+		res.status(200).json({ message: 'Password updated successfully' })
+	} catch (err) {
+		console.error(err.message)
+		res.status(500).json({ error: err.message})
+	}
+})
 
 router.delete('/:id', async (req, res) => {
 	try {
