@@ -76,10 +76,13 @@ router.get('/', async (req, res) => {
 })
 router.get('/:id', async (req, res) => {
 	try {
-		const user = await User.findById(req.params.id).populate({
-			path: 'company',
-			populate: { path: 'reviews', populate: { path: 'reply' } }
-	}).lean().exec()
+		const user = await User.findById(req.params.id)
+			.populate({
+				path: 'company',
+				populate: { path: 'reviews', match: { isDeleted: { $ne: true } }, populate: { path: 'reply' } },
+			})
+			.lean()
+			.exec()
 		return res.status(200).send({ User: user })
 	} catch (error) {
 		return res.status(500).send({ error: error.message })
@@ -134,7 +137,7 @@ router.post('/update/password', async (req, res) => {
 		res.status(200).json({ message: 'Password updated successfully' })
 	} catch (err) {
 		console.error(err.message)
-		res.status(500).json({ error: err.message})
+		res.status(500).json({ error: err.message })
 	}
 })
 

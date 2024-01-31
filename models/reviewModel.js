@@ -20,6 +20,11 @@ const ReviewSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'reviewReply',
 		},
+		isDeleted: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,
