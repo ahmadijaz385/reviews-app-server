@@ -71,6 +71,43 @@ router.get('/:id', async (req, res) => {
 				.populate('category')
 				.populate({
 					path: 'reviews',
+					match: { isDeleted: { $ne: true } },
+					populate: {
+						path: 'reply',
+					},
+				})
+				.lean()
+				.exec()
+		} else {
+			company = await Company.findById(req.params.id)
+				.populate('category')
+				.populate({
+					path: 'reviews',
+					match: { isDeleted: { $ne: true } },
+					populate: {
+						path: 'reply',
+					},
+				})
+				.lean()
+				.exec()
+		}
+		return res.status(200).send(company)
+	} catch (error) {
+		console.log(error.message, ' error.message')
+		return res.status(500).send('Error :', error.message)
+	}
+})
+
+router.get('/:id/admin', async (req, res) => {
+	try {
+		let company
+		if (req.query.categoryID) {
+			company = await Company.find({
+				category: req.query.categoryID,
+			})
+				.populate('category')
+				.populate({
+					path: 'reviews',
 					populate: {
 						path: 'reply',
 					},

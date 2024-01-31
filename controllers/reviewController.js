@@ -4,7 +4,7 @@ const Review = require('../models/reviewModel')
 
 router.get('/', async (req, res) => {
 	try {
-		const review = await Review.find()
+		const review = await Review.find({ isDeleted: false })
 			.sort({ createdAt: -1 })
 			.limit(req.query.limit)
 			.populate({

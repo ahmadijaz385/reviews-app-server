@@ -113,15 +113,16 @@ router.get('/:id', async (req, res) => {
 })
 router.get('/search/reviews', async (req, res) => {
 	try {
-		let categoryId;
 		let match
 		if (req.query.categoryId) {
 			match = {
+				reviewIsDeleted: false,
 				category: new mongoose.Types.ObjectId(req.query.categoryId),
 			}
 		}
 		if (req.query.freeWord) {
 			match = {
+				reviewIsDeleted: false,
 				$or: [
 					{ reviewTitle: { $regex: new RegExp(req.query.freeWord, 'i') } },
 					{ reviewMessage: { $regex: new RegExp(req.query.freeWord, 'i') } },
@@ -131,6 +132,7 @@ router.get('/search/reviews', async (req, res) => {
 
 		if (req.query.categoryId && req.query.freeWord) {
 			match = {
+				reviewIsDeleted: false,
 				category: new mongoose.Types.ObjectId(req.query.categoryId),
 				$or: [
 					{ reviewTitle: { $regex: new RegExp(req.query.freeWord, 'i') } },
@@ -178,6 +180,7 @@ router.get('/search/reviews', async (req, res) => {
 					reviewerName: '$reviewData.reviewerName',
 					userPhoto: '$reviewData.userPhoto',
 					reviewTitle: '$reviewData.reviewTitle',
+					reviewIsDeleted: '$reviewData.isDeleted',
 					reviewMessage: '$reviewData.reviewMessage',
 					rating: '$reviewData.rating',
 					createdAt: '$reviewData.createdAt',
