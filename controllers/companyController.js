@@ -187,9 +187,15 @@ router.post('/:id/reviews', upload.single('userPhoto'), async (req, res) => {
 router.delete('/:id/reviews/:idx', async (req, res) => {
 	try {
 		// const review = await Reviews.findByIdAndDelete(req.params.idx)
-		const review = await Reviews.findByIdAndUpdate(req.params.idx, {
-			isDeleted: true,
-		})
+		const review = await Reviews.findById(req.params.idx)
+		if (!review) {
+			return res.status(404).send({ error: 'Review not found' })
+		}
+		review.isDeleted = !review.isDeleted
+		await review.save()
+		// const review = await Reviews.findByIdAndUpdate(req.params.idx, {
+		// 	isDeleted: true,
+		// })
 		// const company = await Company.findByIdAndUpdate(req.params.id, {
 		// 	$pull: { reviews: req.params.idx },
 		// })
