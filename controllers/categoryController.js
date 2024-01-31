@@ -113,11 +113,11 @@ router.get('/:id', async (req, res) => {
 })
 router.get('/search/reviews', async (req, res) => {
 	try {
-		const categoryId = new mongoose.Types.ObjectId(req.query.categoryId)
+		let categoryId;
 		let match
-		if (categoryId) {
+		if (req.query.categoryId) {
 			match = {
-				category: categoryId,
+				category: new mongoose.Types.ObjectId(req.query.categoryId),
 			}
 		}
 		if (req.query.freeWord) {
@@ -129,9 +129,9 @@ router.get('/search/reviews', async (req, res) => {
 			}
 		}
 
-		if (categoryId && req.query.freeWord) {
+		if (req.query.categoryId && req.query.freeWord) {
 			match = {
-				category: categoryId,
+				category: new mongoose.Types.ObjectId(req.query.categoryId),
 				$or: [
 					{ reviewTitle: { $regex: new RegExp(req.query.freeWord, 'i') } },
 					{ reviewMessage: { $regex: new RegExp(req.query.freeWord, 'i') } },
