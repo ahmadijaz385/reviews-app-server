@@ -141,6 +141,25 @@ router.post('/update/password', async (req, res) => {
 	}
 })
 
+router.delete('/status/:id', async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id)
+		if (!user) {
+			return res.status(404).send({ error: 'User Not Found' })
+		}
+		if (user.status == 'inactive') {
+			user.status = 'active'
+		} else {
+			user.status = 'inactive'
+		}
+		await user.save()
+		res.status(200).json({ message: 'User Status changed' })
+	} catch (err) {
+		console.error(err.message)
+		res.status(500).json({ error: err.message })
+	}
+})
+
 router.delete('/:id', async (req, res) => {
 	try {
 		const user = await User.findByIdAndDelete(req.params.id)
